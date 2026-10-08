@@ -4,7 +4,7 @@ import { getEmbeddings } from '@/lib/embeddings/pipeline';
 import { chunkText } from '@/lib/embeddings/textSplitter';
 import { Database } from '@/lib/supabase/database.types';
 // @ts-ignore
-import pdf from 'pdf-parse';
+import { PDFParse } from 'pdf-parse';
 import mammoth from 'mammoth';
 
 // Use service role key to bypass RLS for inserting admin data
@@ -33,8 +33,13 @@ export async function POST(req: Request) {
 
             if (fileType === 'pdf') {
                 try {
-                    const pdfData = await pdf(buffer);
-                    content = pdfData.text;
+Const parser = new PDFParse({ data: buffer });
+
+const pdfData = await parser.getText();
+
+content = pdfData.text;
+
+await parser.destroy();
                 } catch (err: any) {
                     console.error("PDF Parsing Error:", err);
                     return NextResponse.json({ error: 'Error al procesar el archivo PDF' }, { status: 400 });
