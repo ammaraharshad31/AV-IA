@@ -33,7 +33,8 @@ export async function POST(req: Request) {
 
             if (fileType === 'pdf') {
                 try {
-Const parser = new PDFParse({ data: buffer });
+const pdfData = await pdf(buffer);
+content = pdfData.text;
 
 const pdfData = await parser.getText();
 
